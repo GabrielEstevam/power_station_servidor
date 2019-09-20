@@ -1,72 +1,80 @@
-#include "WiFi.h"
-#include <HTTPClient.h>
- 
-const char* ssid = "GABRIELESTEVAM 4438";
-const char* password =  "0507/7iH";
- 
-void setup() {
- 
-  Serial.begin(115200);
- 
-  WiFi.begin(ssid, password);
- 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi..");
-  }
- 
-  Serial.println("Connected to the WiFi network");
- 
-}
- 
-void loop() {
-  if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
- 
-   HTTPClient http;   
+//
+// A simple server implementation showing how to:
+//  * serve static messages
+//  * read GET and POST parameters
+//  * handle missing pages / 404s
+//
 
-    http.begin("http://150.162.207.52:3000/set"); //Specify the URL
-    int httpCode = http.GET();                                        //Make the request
- 
-    if (httpCode > 0) { //Check for the returning code
- 
-        String payload = http.getString();
-        Serial.println(httpCode);
-        Serial.println(payload);
-      }
- 
-    else {
-      Serial.println("Error on HTTP request");
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
+int relay = 2;
+int turnRelay = LOW;
+AsyncWebServer server(80);
+
+const char* ssid = "GABRIELESTEVAM 4438";
+const char* password = "0507/7iH";
+
+const char* PARAM_MESSAGE = "message";
+
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
+}
+
+void setup() {
+
+    pinMode(relay, OUTPUT);
+    Serial.begin(115200);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+        Serial.printf("WiFi Failed!\n");
+        return;
     }
- 
-    http.end(); //Free the resources
- 
-   /*http.begin("http://150.162.207.52:3000");  //Specify destination for HTTP request
-   http.addHeader("Content-Type", "text/plain");             //Specify content-type header
- 
-   int httpResponseCode = http.POST("POSTING from ESP32");   //Send the actual POST request
- 
-   if(httpResponseCode>0){
- 
-    String response = http.getString();                       //Get the response to the request
- 
-    Serial.println(httpResponseCode);   //Print return code
-    Serial.println(response);           //Print request answer
- 
-   }else{
- 
-    Serial.print("Error on sending POST: ");
-    Serial.println(httpResponseCode);
- 
-   }
- 
-   http.end();  //Free resources*/
- 
- }else{
- 
-    Serial.println("Error in WiFi connection");   
- 
- }
- 
-  delay(10000);  //Send a request every 10 seconds
- 
+
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        if(turnRelay == LOW){
+          turnRelay = HIGH;
+        }
+        else
+          turnRelay = LOW;
+        
+        digitalWrite(relay, turnRelay);
+          
+        request->send(200, "text/plain", "Hello, world");
+    });
+
+    // Send a GET request to <IP>/get?message=<message>
+    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+        String message;
+        if (request->hasParam(PARAM_MESSAGE)) {
+            message = request->getParam(PARAM_MESSAGE)->value();
+        } else {
+            message = "No message sent";
+        }
+        request->send(200, "text/plain", "Hello, GET: " + message);
+    });
+
+    // Send a POST request to <IP>/post with a form field message set to <message>
+    server.on("/post", HTTP_POST, [](AsyncWebServerRequest *request){
+        String message;
+        if (request->hasParam(PARAM_MESSAGE, true)) {
+            message = request->getParam(PARAM_MESSAGE, true)->value();
+        } else {
+            message = "No message sent";
+        }
+        request->send(200, "text/plain", "Hello, POST: " + message);
+    });
+
+    server.onNotFound(notFound);
+
+    server.begin();
+}
+
+void loop() {
 }
