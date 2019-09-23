@@ -1,8 +1,8 @@
-var express = require("express");
-var bodyParser = require("body-parser");
+const express = require("express");
+const bodyParser = require("body-parser");
 
 const routes = require('./routes.js');
-var app = express();
+const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
@@ -12,3 +12,5 @@ app.listen(3000, () => {
 })
 
 app.use(routes);
+app.use('/public', express.static('public'))
+app.use('/img', express.static('src/img'))
