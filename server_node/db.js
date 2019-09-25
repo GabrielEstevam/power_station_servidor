@@ -77,13 +77,29 @@ db.validateSignin = async function(user){
 db.validateLogin = async function(user, password){
 	let data = {validation: true };
 
-	await this.get("SELECT id_user FROM Users WHERE name = ? AND password = ?", [user.toLowerCase(), password])
+	await this.get("SELECT id_user FROM Users WHERE username = ? AND password = ?", [user.toLowerCase(), password])
 	.then(async (res) => {
 		if(res !== undefined)
 			data.id = res.id_user;
 		else
 			data.validation = false;
-	});
+	})
+	.catch(async err => {
+		data.error = err;
+	})
+
+	return data;
+}
+
+db.signIn = async function(name, user, password){
+	let data = {};
+
+	await this.run("INSERT INTO Users(username, name, password, credit) VALUES (?, ?, ?, 0)", [user.toLowerCase(), name.toLowerCase(), password])
+	.then(async res => {
+		if(res !== undefined)
+			data.success = true;
+	})
+	.catch(async err => data.error = err);
 
 	return data;
 }
