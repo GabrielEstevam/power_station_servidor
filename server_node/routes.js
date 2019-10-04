@@ -12,6 +12,11 @@ routes.get('/main', (req,res) => {
     res.sendFile(__dirname + "/public/main.html");
 })
 
+
+routes.get('/store', (req,res) => {
+    res.sendFile(__dirname + "/public/store.html");
+});
+
 routes.get('/signup', (req,res) => {
     res.sendFile(__dirname + "/public/signup.html");
 })
