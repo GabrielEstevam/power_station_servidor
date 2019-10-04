@@ -16,15 +16,19 @@
 
         <form id="form" action="/main" class="text-left">
           <div class="form-group">
-            <label for="inputUser">User</label>
-            <input type="text" class="form-control" id="inputUser" aria-describedby="emailHelp" placeholder="Username" required>
-            <small id="userHelp" class="form-text text-muted">Type your username.</small>
+            <label for="inputUser">Usuário</label>
+            <input type="text" class="form-control" id="inputUser" aria-describedby="user" placeholder="Usuário" required>
+            <small id="userHelp" class="form-text text-muted">Digite seu usuário.</small>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="inputPassword">Senha</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Senha" required>
           </div>
           <div class="form-group">
-            <label for="inputPassword">Password</label>
-            <input type="password" class="form-control" id="inputPassword" placeholder="Password" required>
+            <button type="submit" class="btn btn-primary">Entrar</button>
+            <a href="/signup" class="badge">Não tem um login? Cadastre-se</a>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
         </form>
       </div>
       </div>

@@ -6,3 +6,7 @@
 .container div{
     margin: auto; 
 }
+
+button{
+    margin-top: 10px;
+}

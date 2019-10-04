@@ -17,7 +17,7 @@ form.addEventListener("submit", async (event) => {
         form.submit();
     }
     else{
-        console.error("Unable to login");
+        console.error("Unable to login", validation.error ? validation.error : '');
     }
     
 });

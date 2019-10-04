@@ -12,6 +12,10 @@ routes.get('/main', (req,res) => {
     res.sendFile(__dirname + "/public/main.html");
 })
 
+routes.get('/signup', (req,res) => {
+    res.sendFile(__dirname + "/public/signup.html");
+})
+
 routes.get('/user/:id', async (req, res) => {
     if(!req.params){
         res.status(500).send({error: "Id is missing"});
@@ -29,6 +33,23 @@ routes.get('/user/:id', async (req, res) => {
 routes.post('/login', async (req, res) => {
     let {user, password} = req.body;
     let response = await sql.validateLogin(user, password);
+
+    res.status(200).send(response);
+});
+
+routes.post('/validateSignin', async (req, res) => {
+    let response = {};
+    let {name, user, password} = req.body;
+    let validation = await sql.validateSignin(user);
+    response.validation = !validation.user;
+
+    if(response.validation){
+        let signResponse = await sql.signIn(name, user, password);
+        if(signResponse.error)
+            response.error = signResponse.error;
+    }
+
+    console.log(response);
 
     res.status(200).send(response);
 });
