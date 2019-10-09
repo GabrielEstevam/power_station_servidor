@@ -53,6 +53,28 @@ db.getRelays = async function(){
 	return {relays, error};
 }
 
+//POST
+
+db.buyCredits = async function(time, idUser){
+	let data = {success: false};
+
+	await this.run("UPDATE Users SET credit = credit + ? WHERE id_user = ? ", [time , idUser])
+	.then((result) => {
+		if (result !== undefined)
+			data.success = true
+		
+	})
+	.catch((err) => {
+		console.log("Error validating sign in: ", err);
+		data.error = err;
+	})
+
+	return data; // retorna dados para a rota
+}
+
+
+
+
 //VALIDATE
 
 db.validateSignin = async function(user){
