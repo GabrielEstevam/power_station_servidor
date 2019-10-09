@@ -4,6 +4,8 @@ const sql = require('./db');
 
 const routes = express.Router();
 
+// PAGES
+
 routes.get('/', (req,res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
@@ -12,27 +14,14 @@ routes.get('/main', (req,res) => {
     res.sendFile(__dirname + "/public/main.html");
 })
 
-
 routes.get('/store', (req,res) => {
     res.sendFile(__dirname + "/public/store.html");
 });
 
+// AUTH
+
 routes.get('/signup', (req,res) => {
     res.sendFile(__dirname + "/public/signup.html");
-})
-
-routes.get('/user/:id', async (req, res) => {
-    if(!req.params){
-        res.status(500).send({error: "Id is missing"});
-    }
-    else{
-        const user = await sql.getUserById(req.params.id);
-
-        if(user.error)
-            res.status(503).send({error: "Id is missing"});
-        else
-            res.status(200).send(user);
-    }
 })
 
 routes.post('/login', async (req, res) => {
@@ -57,6 +46,31 @@ routes.post('/validateSignin', async (req, res) => {
     console.log(response);
 
     res.status(200).send(response);
+});
+
+// DATA FROM DB
+
+routes.get('/user/:id', async (req, res) => {
+    if(!req.params){
+        res.status(500).send({error: "Id is missing"});
+    }
+    else{
+        const user = await sql.getUserById(req.params.id);
+
+        if(user.error)
+            res.status(503).send({error: "Id is missing"});
+        else
+            res.status(200).send(user);
+    }
+});
+
+routes.get('/relays', async (req, res) => {
+    const relaysRes = await sql.getRelays();
+
+    if(relaysRes.error)
+        res.status(400).send({error: "Relays not found"});
+    else
+        res.status(200).send(relaysRes.relays);
 });
 
 /* routes.get('/login', async (req,res) => {
