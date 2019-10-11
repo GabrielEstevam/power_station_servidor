@@ -73,6 +73,17 @@ routes.get('/relays', async (req, res) => {
         res.status(200).send(relaysRes.relays);
 });
 
+// DATA TO DB  
+
+routes.post('/buyCredits', async (req, res) => {
+    const {time, idUser} = req.body;
+    const response = await sql.buyCredits(time, idUser); // manda pro bd
+    console.log(response);
+    res.status(200).send(response); //responde status valido
+
+});
+
+
 /* routes.get('/login', async (req,res) => {
     const response = await api.get('/');
     console.log(response.data);
