@@ -78,11 +78,23 @@ routes.get('/relays', async (req, res) => {
 routes.post('/buyCredits', async (req, res) => {
     const {time, idUser} = req.body;
     const response = await sql.buyCredits(time, idUser); // manda pro bd
-    console.log(response);
+    
     res.status(200).send(response); //responde status valido
-
 });
 
+routes.post('/activateRelay', async (req, res) => {
+    const {id_user, id_relay, credit} = req.body;
+    const response = await sql.activateRelay(id_user, id_relay, credit);
+
+    res.status(200).send(response);
+})
+
+routes.post('/deactivateRelay', async (req, res) => {
+    const {id_user, id_relay} = req.body;
+    const response = await sql.deactivateRelay(id_user, id_relay);
+
+    res.status(200).send(response);
+})
 
 /* routes.get('/login', async (req,res) => {
     const response = await api.get('/');
