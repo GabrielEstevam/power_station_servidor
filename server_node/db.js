@@ -55,6 +55,22 @@ db.getRelays = async function(){
 
 //POST
 
+db.updateRelay = async function(relay){
+	let data = {success: false};
+
+	await this.run("UPDATE Relays SET inUse = ?, remainingTime = ?, id_user = ? WHERE id_relay = ?",[relay.inUse, relay.remainingTime, relay.id_user, relay.id_relay])
+	.then((result) => {
+		if(result !== undefined)
+			data.success = true;
+	})
+	.catch((err) => {
+		console.log(`Error activating relay ${id_relay}: `, err);
+		data.error = err;
+	})
+
+	return data;
+}
+
 db.buyCredits = async function(time, idUser){
 	let data = {success: false};
 
@@ -72,8 +88,37 @@ db.buyCredits = async function(time, idUser){
 	return data; // retorna dados para a rota
 }
 
+db.activateRelay = async function(id_user, id_relay, credit){
+	let data = {success: false};
 
+	await this.run("UPDATE Relays SET inUse = 1, remainingTime = ?, id_user = ? WHERE id_relay = ?",[credit, id_user, id_relay])
+	.then((result) => {
+		if(result !== undefined)
+			data.success = true;
+	})
+	.catch((err) => {
+		console.log(`Error activating relay ${id_relay}: `, err);
+		data.error = err;
+	})
 
+	return data;
+}
+
+db.deactivateRelay = async function(id_user, id_relay){
+	let data = {success: false};
+
+	await this.run("UPDATE Relays SET inUse = 0, remainingTime = 0, id_user = 0 WHERE id_relay = ? AND id_user = ?",[id_relay, id_user])
+	.then((result) => {
+		if(result !== undefined)
+			data.success = true;
+	})
+	.catch((err) => {
+		console.log(`Error deactivating relay ${id_relay}: `, err);
+		data.error = err;
+	})
+
+	return data;
+}
 
 //VALIDATE
 
