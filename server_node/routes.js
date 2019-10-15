@@ -86,12 +86,16 @@ routes.post('/activateRelay', async (req, res) => {
     const {id_user, id_relay, credit} = req.body;
     const response = await sql.activateRelay(id_user, id_relay, credit);
 
+    await api.post('/activateRelay', { id_relay });
+
     res.status(200).send(response);
 })
 
 routes.post('/deactivateRelay', async (req, res) => {
     const {id_user, id_relay} = req.body;
     const response = await sql.deactivateRelay(id_user, id_relay);
+    
+    await api.post('/deactivateRelay', { id_relay });
 
     res.status(200).send(response);
 })

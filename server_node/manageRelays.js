@@ -1,4 +1,5 @@
 const sql = require('./db');
+const api = require('./src/api');
 
 let relays = [];
 
@@ -12,6 +13,7 @@ const manageRelays = async (io) => {
                     relays[i].inUse = 0;
                     relays[i].id_user = 0;
                     await sql.updateRelay(relays[i]);
+                    await api.post('/deactivateRelay', { id_relay: relays[i].id_relay });
                     io.emit('updateRelays', relays[i]);
                 }
             }
