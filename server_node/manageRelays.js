@@ -27,7 +27,13 @@ const emitUpdate = (io, newRelay) => {
     io.emit('updateRelays', newRelay)
 }
 
+const activeRelay = (id_relay, id_user) => {
+    relays[id_relay].inUse = 1
+    relays[id_relay].id_user = id_user
+}
+
 module.exports = {
     manageRelays,
     emitUpdate,
+    activeRelay,
 };

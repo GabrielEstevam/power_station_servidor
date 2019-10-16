@@ -70,7 +70,6 @@ const toggleRelay = async (id_relay, button) => {
     let id_user = user.id_user;
 
     if(relay.inUse === 0){
-
         let spentCredit = user.credit;
 
         //spends a maximum of 30 credits a time

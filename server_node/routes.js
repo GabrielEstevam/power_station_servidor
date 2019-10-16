@@ -1,6 +1,9 @@
 const express = require('express');
+const request = require('request')
 const api = require('./src/api');
 const sql = require('./db');
+
+const activeRelay = require('./manageRelays');
 
 const routes = express.Router();
 
@@ -86,12 +89,20 @@ routes.post('/activateRelay', async (req, res) => {
     const {id_user, id_relay, credit} = req.body;
     const response = await sql.activateRelay(id_user, id_relay, credit);
 
+    // Deu ruim desse jeito -> activeRelay(0,0); // id_relay, id_user
+    request('http://192.168.137.19/activate', function (error, response, body) {
+        console.log(body);
+    });
+
     res.status(200).send(response);
 })
 
 routes.post('/deactivateRelay', async (req, res) => {
     const {id_user, id_relay} = req.body;
     const response = await sql.deactivateRelay(id_user, id_relay);
+    request('http://192.168.137.19/deactivate', function (error, response, body) {
+        console.log(body);
+    });
 
     res.status(200).send(response);
 })
