@@ -10,14 +10,12 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-int relay = 2;
+int relay[4] = {2, nullptr, nullptr, nullptr};
 int turnRelay = LOW;
 AsyncWebServer server(80);
 
 const char* ssid = "GABRIELESTEVAM 4438";
 const char* password = "0507/7iH";
-
-const char* PARAM_MESSAGE = "message";
 
 void notFound(AsyncWebServerRequest *request) {
     request->send(404, "text/plain", "Not found");
@@ -36,15 +34,31 @@ void setup() {
 
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
+  
+    server.on("/activateRelay", HTTP_POST, [] (AsyncWebServerRequest *request) {
+        int id_relay;
+        if (request->hasParam("id_relay", true)) {
+            id_relay = stoi(request->getParam("id_relay", true)->value());
+            digitalWrite(relay[id_relay], LOW);
 
-    server.on("/activate", HTTP_GET, [](AsyncWebServerRequest *request){
-        digitalWrite(relay, HIGH);
-        request->send(200, "text/plain", "activated");
+            request->send(200, "text/plain", "Activated relay");
+        } else {
+            request->send();
+        }
+        request->send(400, "text/plain", "Your request is missing parameters");
     });
 
-    server.on("/deactivate", HTTP_GET, [](AsyncWebServerRequest *request){
-        digitalWrite(relay, LOW);
-        request->send(200, "text/plain", "deactivated");
+    server.on("/deactivateRelay", HTTP_POST, [] (AsyncWebServerRequest *request) {
+        int id_relay;
+        if (request->hasParam("id_relay", true)) {
+            id_relay = stoi(request->getParam("id_relay", true)->value());
+            digitalWrite(relay[id_relay], HIGH);
+
+            request->send(200, "text/plain", "Dectivated relay");
+        } else {
+            request->send();
+        }
+        request->send(400, "text/plain", "Your request is missing parameters");
     });
 
     server.onNotFound(notFound);
