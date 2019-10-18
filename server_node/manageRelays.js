@@ -13,7 +13,11 @@ const manageRelays = async (io) => {
                     relays[i].inUse = 0;
                     relays[i].id_user = 0;
                     await sql.updateRelay(relays[i]);
-                    await api.post('/deactivateRelay', { id_relay: relays[i].id_relay });
+                    await api.get('/deactivateRelay', {
+                        params: {
+                            id_relay: relays[i].id_relay-1 
+                        }
+                    });
                     io.emit('updateRelays', relays[i]);
                 }
             }

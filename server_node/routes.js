@@ -86,7 +86,16 @@ routes.post('/activateRelay', async (req, res) => {
     const {id_user, id_relay, credit} = req.body;
     const response = await sql.activateRelay(id_user, id_relay, credit);
 
-    await api.post('/activateRelay', { id_relay });
+    try{
+        await api.get('/activateRelay', {
+            params: {
+                id_relay: id_relay-1
+            }
+        });
+    }
+    catch(error){
+        console.error(error.request.params, error.response.status, error.response.statusText, error.response.data);
+    }
 
     res.status(200).send(response);
 })
@@ -94,8 +103,18 @@ routes.post('/activateRelay', async (req, res) => {
 routes.post('/deactivateRelay', async (req, res) => {
     const {id_user, id_relay} = req.body;
     const response = await sql.deactivateRelay(id_user, id_relay);
-    
-    await api.post('/deactivateRelay', { id_relay });
+
+    try{
+        await api.get('/deactivateRelay', {
+            params: {
+                id_relay: id_relay-1
+            }
+        });
+    }
+    catch(error){
+        console.error(error.request.params, error.response.status, error.response.statusText, error.response.data);
+    }
+
 
     res.status(200).send(response);
 })

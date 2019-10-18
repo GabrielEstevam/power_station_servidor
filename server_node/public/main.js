@@ -10,8 +10,13 @@ const gId = (id) => {
 const formatRemainingTime = (time) => {
     if(time < 60)
         return `${time} segundos`;
-    else
-        return `${Math.ceil(time/60)} minutos`;
+    else{
+        let minutes = Math.ceil(time/60);
+        let seconds = time%60;
+        if(seconds !== 0)
+            minutes--;
+        return `${minutes}:${("0" + seconds).slice(-2)} minutos`;
+    }
 }
 
 window.onload = async () => {
@@ -20,7 +25,7 @@ window.onload = async () => {
         window.location.href = "/";
     }
 
-    socket = io('http://10.0.0.106:3000', {
+    socket = io('http://192.168.137.159:3000', {
         query: { id_user: idUser }
     });
     defineSocketEvents();
