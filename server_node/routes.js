@@ -2,6 +2,8 @@ const express = require('express');
 const api = require('./src/api');
 const sql = require('./db');
 
+const activeRelay = require('./manageRelays');
+
 const routes = express.Router();
 
 // PAGES
@@ -99,13 +101,5 @@ routes.post('/deactivateRelay', async (req, res) => {
 
     res.status(200).send(response);
 })
-
-/* routes.get('/login', async (req,res) => {
-    const response = await api.get('/');
-    console.log(response.data);
-
-    res.status(200).send({succes: "Deu bom"});
-});
-   */
 
 module.exports = routes;

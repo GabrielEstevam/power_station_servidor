@@ -34,19 +34,7 @@ void setup() {
 
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
-
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        if(turnRelay == LOW){
-          turnRelay = HIGH;
-        }
-        else
-          turnRelay = LOW;
-        
-        digitalWrite(relay[0], turnRelay);
-          
-        request->send(200, "text/plain", "Hello, world");
-    });
-
+  
     server.on("/activateRelay", HTTP_POST, [] (AsyncWebServerRequest *request) {
         int id_relay;
         if (request->hasParam("id_relay", true)) {
