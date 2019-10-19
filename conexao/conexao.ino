@@ -10,7 +10,7 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-int relay[4] = {2, nullptr, nullptr, nullptr};
+int relay[4] = {2, -1, -1, -1};
 int turnRelay = LOW;
 AsyncWebServer server(80);
 
@@ -23,7 +23,7 @@ void notFound(AsyncWebServerRequest *request) {
 
 void setup() {
 
-    pinMode(relay, OUTPUT);
+    pinMode(relay[0], OUTPUT);
     Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -35,30 +35,34 @@ void setup() {
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
   
-    server.on("/activateRelay", HTTP_POST, [] (AsyncWebServerRequest *request) {
+    server.on("/activateRelay", HTTP_GET, [] (AsyncWebServerRequest *request) {
         int id_relay;
-        if (request->hasParam("id_relay", true)) {
-            id_relay = stoi(request->getParam("id_relay", true)->value());
+        if (request->hasParam("id_relay")) {
+            id_relay = request->getParam("id_relay")->value().toInt();
+            Serial.print("id_relay");
+            Serial.println(id_relay);
             digitalWrite(relay[id_relay], LOW);
 
             request->send(200, "text/plain", "Activated relay");
         } else {
-            request->send();
+            request->send(400, "text/plain", "Your request is missing parameters");
         }
-        request->send(400, "text/plain", "Your request is missing parameters");
+        
     });
 
-    server.on("/deactivateRelay", HTTP_POST, [] (AsyncWebServerRequest *request) {
+    server.on("/deactivateRelay", HTTP_GET, [] (AsyncWebServerRequest *request) {
         int id_relay;
-        if (request->hasParam("id_relay", true)) {
-            id_relay = stoi(request->getParam("id_relay", true)->value());
+        if (request->hasParam("id_relay")) {
+            id_relay = request->getParam("id_relay")->value().toInt();
+            Serial.print("id_relay");
+            Serial.println(id_relay);
             digitalWrite(relay[id_relay], HIGH);
 
             request->send(200, "text/plain", "Dectivated relay");
         } else {
-            request->send();
+            request->send(400, "text/plain", "Your request is missing parameters");
         }
-        request->send(400, "text/plain", "Your request is missing parameters");
+        
     });
 
     server.onNotFound(notFound);
