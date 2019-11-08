@@ -1,3 +1,0 @@
-Bob 1234
-Alice 5678
-Mallory 9009
