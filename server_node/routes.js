@@ -96,7 +96,10 @@ routes.post('/activateRelay', async (req, res) => {
         });
     }
     catch(error){
-        console.error(error.request.params, error.response.status, error.response.statusText, error.response.data);
+        if(error.response)
+            console.error(error.request.params, error.response.status, error.response.statusText, error.response.data);
+        else
+            console.error("Could not connect to relay!")
     }
 
     res.status(200).send(response);
@@ -114,7 +117,10 @@ routes.post('/deactivateRelay', async (req, res) => {
         });
     }
     catch(error){
-        console.error(error.request.params, error.response.status, error.response.statusText, error.response.data);
+        if(error.response)
+            console.error(error.request.params, error.response.status, error.response.statusText, error.response.data);
+        else
+            console.error("Could not connect to relay!")
     }
 
 

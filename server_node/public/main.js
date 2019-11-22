@@ -25,7 +25,7 @@ window.onload = async () => {
         window.location.href = "/";
     }
 
-    socket = io('http://192.168.137.159:3000', {
+    socket = io('http://192.168.0.101:3000', {
         query: { id_user: idUser }
     });
     defineSocketEvents();
